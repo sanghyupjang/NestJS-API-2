@@ -1,39 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Movie } from './entities/movie.entity';
-import { CreateMovieDto } from './dto/create-movie.dto';
-import { UpdateMovieDto } from './dto/update-movie.dto';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MoviesService } from './movies.service';
 
-@Injectable()
-export class MoviesService {
-  private movies: Movie[] = [];
+describe('MoviesService', () => {
+  let service: MoviesService;
 
-  getAll(): Movie[] {
-    return this.movies;
-  }
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [MoviesService],
+    }).compile();
 
-  getOne(id: number): Movie {
-    const movie = this.movies.find(movie => movie.id === id);
-    if (!movie) {
-      throw new NotFoundException(`Movie with ID ${id} not found.`);
-    }
-    return movie;
-  }
+    service = module.get<MoviesService>(MoviesService);
+  });
 
-  deleteOne(id: number) {
-    this.getOne(id);
-    this.movies = this.movies.filter(movie => movie.id !== id);
-  }
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-  create(movieData: CreateMovieDto) {
-    this.movies.push({
-      id: this.movies.length + 1,
-      ...movieData,
-    });
-  }
-
-  update(id: number, updateData: UpdateMovieDto) {
-    const movie = this.getOne(id);
-    this.deleteOne(id);
-    this.movies.push({ ...movie, ...updateData });
-  }
-}
+  it('should be 4', () => {
+    expect(2 + 3).toEqual(5);
+  });
+});
